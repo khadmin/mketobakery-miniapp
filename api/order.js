@@ -120,7 +120,8 @@ export default async function handler(req, res) {
     `👤 ${esc(name)} ${tgLink}\n` +
     `📞 ${esc(phone)}\n` +
     `📍 ${esc(address)}` +
-    (note ? `\n📝 ${esc(note)}` : "");
+    (note ? `\n📝 ${esc(note)}` : "") +
+    (u.id ? `\nID: ${u.id}\n<i>↩️ Reply លើ សារនេះ ដើម្បី ឆ្លើយ ទៅ អតិថិជន</i>` : "");
 
   try {
     await tg(BOT_TOKEN, "sendMessage", { chat_id: SHOP_CHAT_ID, text, parse_mode: "HTML" });
