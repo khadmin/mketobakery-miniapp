@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>M Keto Bakery</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1F6B3A; --green-2:#2E8B4E; --green-soft:#E6F2E9;
+    --gold:#C9A227; --gold-soft:#FBF3DC;
+    --ink:#1B2A20; --muted:#5D6B61; --bg:#F7F8F4; --card:#FFFFFF; --line:#E2E8E0;
+    --danger:#B3261E; --radius:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Kantumruy Pro',system-ui,sans-serif;font-size:16px;line-height:1.6}
+  button,input,textarea{font:inherit;color:inherit}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px 120px}
+
+  header{display:flex;align-items:center;gap:12px;padding:16px 0 12px}
+  .logo{width:56px;height:56px;border-radius:50%;object-fit:contain;background:#fff;border:2px solid var(--gold);flex:none}
+  .logo-fallback{display:none}
+  header h1{font-size:20px;margin:0;line-height:1.4}
+  header p{margin:0;color:var(--muted);font-size:14px}
+
+  .demo{background:var(--gold-soft);border:1px solid #EAD9A2;border-radius:12px;padding:8px 12px;font-size:13px;color:#6B5513;margin-bottom:12px;display:none}
+
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;position:sticky;top:0;background:var(--bg);z-index:5;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 16px;white-space:nowrap;cursor:pointer}
+  .tab.on{background:var(--green);border-color:var(--green);color:#fff}
+
+  h2.cat{font-size:18px;margin:16px 0 8px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .thumb{aspect-ratio:4/3;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:48px}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .info{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px;flex:1}
+  .name{font-weight:600;font-size:15px;line-height:1.5}
+  .desc{color:var(--muted);font-size:12.5px;line-height:1.5}
+  .row{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;gap:6px}
+  .price{font-weight:700;color:var(--green)}
+  .add{border:0;background:var(--green);color:#fff;border-radius:999px;padding:4px 14px;cursor:pointer;font-weight:600}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty button{width:30px;height:30px;border-radius:50%;border:0;background:var(--green-soft);color:var(--green);font-size:18px;font-weight:700;cursor:pointer;line-height:1}
+  .qty span{min-width:18px;text-align:center;font-weight:700}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+  .card h3{margin:0 0 8px;font-size:16px}
+  .line{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .line:last-child{border-bottom:0}
+  .total{display:flex;justify-content:space-between;font-weight:700;font-size:18px;padding-top:8px}
+  .riel{color:var(--muted);font-size:13px;text-align:right}
+  label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+  input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;outline:none}
+  input:focus,textarea:focus{border-color:var(--green-2)}
+  textarea{min-height:72px;resize:vertical}
+  .err{color:var(--danger);font-size:13px;margin-top:4px;display:none}
+  .pay{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pay label{margin:0;border:1px solid var(--line);border-radius:12px;padding:10px;font-weight:500;display:flex;gap:8px;align-items:center;cursor:pointer;background:#fff}
+  .pay input{width:auto}
+  .pay label:has(input:checked){border-color:var(--green);background:var(--green-soft)}
+  .link{background:none;border:0;color:var(--green);font-weight:600;cursor:pointer;padding:8px 0}
+
+  .done{text-align:center;padding-top:32px}
+  .done .big{font-size:64px}
+  .khqr{max-width:260px;width:100%;border-radius:12px;border:1px solid var(--line);margin:12px auto;display:block;background:#fff}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%);display:none}
+  .bar button{width:100%;max-width:528px;margin:0 auto;display:block;border:0;border-radius:14px;padding:14px;background:var(--green);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+  .bar button:disabled{opacity:.6}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" id="logo" src="logo.png" alt="M Keto Bakery" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'">
+    <svg class="logo logo-fallback" id="logoFallback" viewBox="0 0 56 56" aria-label="M Keto Bakery">
+      <circle cx="28" cy="28" r="27" fill="#fff"/>
+      <path d="M28 46 C12 36 10 24 15 18 C19 13 25 15 28 20 C31 15 37 13 41 18 C46 24 44 36 28 46Z" fill="#2E8B4E" stroke="#C9A227" stroke-width="2"/>
+      <path d="M19 33 V23 L24 29 L28 23 L32 29 L37 23 V33" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M29 14 C30 9 34 7 38 7 C37 11 34 14 29 14Z" fill="#3FA65F"/>
+    </svg>
+    <div>
+      <h1 id="shopName">M Keto Bakery</h1>
+      <p>នំ Keto គ្មានស្ករ · កុម្ម៉ង់ តាម Telegram</p>
+    </div>
+  </header>
+
+  <div class="demo" id="demo">កំពុង បើក ជា Demo (មិន ទាន់ ភ្ជាប់ Server)។ ការកុម្ម៉ង់ នឹង មិន ត្រូវ បាន ផ្ញើ ទេ។</div>
+
+  <!-- ទំព័រ ១: ម៉ឺនុយ -->
+  <section id="pageMenu">
+    <nav class="tabs" id="tabs"></nav>
+    <div id="menu"></div>
+  </section>
+
+  <!-- ទំព័រ ២: កន្ត្រក និង ព័ត៌មាន -->
+  <section id="pageCheckout" class="hidden">
+    <button class="link" id="backLink">← ត្រឡប់ ទៅ ម៉ឺនុយ</button>
+    <div class="card">
+      <h3>កន្ត្រក របស់អ្នក</h3>
+      <div id="cartLines"></div>
+      <div class="total"><span>សរុប</span><span id="cartTotal">$0.00</span></div>
+      <div class="riel" id="cartRiel"></div>
+    </div>
+    <div class="card">
+      <h3>ព័ត៌មាន ដឹកជញ្ជូន</h3>
+      <label for="fName">ឈ្មោះ</label>
+      <input id="fName" autocomplete="name" placeholder="ឈ្មោះ របស់អ្នក">
+      <div class="err" id="eName">សូម បញ្ចូល ឈ្មោះ</div>
+      <label for="fPhone">លេខទូរស័ព្ទ</label>
+      <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="012 345 678">
+      <div class="err" id="ePhone">លេខទូរស័ព្ទ មិន ត្រឹមត្រូវ (ឧ. 012 345 678)</div>
+      <label for="fAddress">អាសយដ្ឋាន</label>
+      <textarea id="fAddress" placeholder="ផ្ទះលេខ ផ្លូវ សង្កាត់ ខណ្ឌ"></textarea>
+      <div class="err" id="eAddress">សូម បញ្ចូល អាសយដ្ឋាន</div>
+      <label for="fNote">កំណត់សម្គាល់ (មិនចាំបាច់)</label>
+      <input id="fNote" placeholder="ឧ. ម៉ោង ទទួល រសជាតិ">
+      <label>ការបង់ប្រាក់</label>
+      <div class="pay">
+        <label><input type="radio" name="pay" value="cod" checked> បង់ ពេល ទទួល</label>
+        <label><input type="radio" name="pay" value="khqr"> KHQR / Bakong</label>
+      </div>
+    </div>
+    <div class="err" id="eSubmit" style="text-align:center"></div>
+  </section>
+
+  <!-- ទំព័រ ៣: អរគុណ -->
+  <section id="pageDone" class="hidden done">
+    <div class="big">💚</div>
+    <h2>អរគុណ! បាន ទទួល ការកុម្ម៉ង់</h2>
+    <p>លេខ កុម្ម៉ង់៖ <b id="doneNo"></b> · សរុប <b id="doneTotal"></b></p>
+    <div id="doneKhqr" class="hidden">
+      <p>សូម ស្កេន KHQR ខាងក្រោម ហើយ ផ្ញើ រូប វិក្កយបត្រ ទៅ Bot នេះ</p>
+      <img class="khqr" src="khqr.png" alt="KHQR របស់ ហាង" onerror="this.style.display='none'">
+    </div>
+    <p style="color:var(--muted)">ហាង នឹង ទាក់ទង អ្នក ឆាប់ៗ ដើម្បី បញ្ជាក់ ម៉ោង ដឹកជញ្ជូន។</p>
+    <button class="link" id="againBtn">កុម្ម៉ង់ ម្ដងទៀត</button>
+  </section>
+</div>
+
+<div class="bar" id="bar"><button id="barBtn"></button></div>
+
+<script>
+// ម៉ឺនុយ គំរូ សម្រាប់ Demo ពេល មិន ទាន់ មាន Server (ម៉ឺនុយ ពិត មក ពី api/_menu.js)
+const DEMO = {
+  shop: { name: "M Keto Bakery", rielRate: 4000, deliveryFee: 0 },
+  categories: [{id:"cake",name:"នំខេក"},{id:"bread",name:"នំប៉័ង"},{id:"cookie",name:"ខូគី និង នំតូចៗ"}],
+  menu: [
+    {id:"choco-cake",cat:"cake",name:"នំខេក Keto សូកូឡា",desc:"គ្មាន ស្ករ · ម្សៅ អាល់ម៉ុន",price:1800,emoji:"🍫",image:""},
+    {id:"cheesecake",cat:"cake",name:"Cheesecake Keto",desc:"ក្រែមឈីស · ស្ករ Erythritol",price:2000,emoji:"🍰",image:""},
+    {id:"cake-slice",cat:"cake",name:"នំខេក មួយចំណិត",desc:"ជ្រើស រសជាតិ ក្នុង កំណត់សម្គាល់",price:350,emoji:"🧁",image:""},
+    {id:"keto-bread",cat:"bread",name:"នំប៉័ង Keto",desc:"Carb ទាប · ១ ដុំ",price:600,emoji:"🍞",image:""},
+    {id:"keto-bun",cat:"bread",name:"នំប៉័ង មូល Keto (៤ គ្រាប់)",desc:"សម្រាប់ Burger ឬ អាហារពេលព្រឹក",price:450,emoji:"🥯",image:""},
+    {id:"cookie-box",cat:"cookie",name:"ខូគី អាល់ម៉ុន (១០ គ្រាប់)",desc:"ស្រួយ · គ្មាន ស្ករ",price:500,emoji:"🍪",image:""},
+    {id:"brownie",cat:"cookie",name:"Brownie Keto",desc:"សូកូឡា ខ្មៅ ៨៥%",price:300,emoji:"🟫",image:""}
+  ]
+};
+
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTelegram = !!(tg && tg.initData);
+let data = DEMO, demoMode = true, page = "menu", sending = false;
+const cart = {}; // id -> qty
+
+const $ = (id) => document.getElementById(id);
+const money = (c) => "$" + (c / 100).toFixed(2);
+const riel = (c) => data.shop.rielRate ? "≈ " + Math.round(c / 100 * data.shop.rielRate).toLocaleString("en-US") + " ៛" : "";
+const esc = (s) => String(s).replace(/[&<>"']/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const haptic = (t) => { try { tg && tg.HapticFeedback.impactOccurred(t || "light"); } catch (e) {} };
+
+
+function cartList() {
+  return Object.entries(cart).filter(([, q]) => q > 0).map(([id, qty]) => ({ ...data.menu.find((m) => m.id === id), qty }));
+}
+function cartTotal() {
+  const sub = cartList().reduce((s, i) => s + i.price * i.qty, 0);
+  return sub ? sub + (data.shop.deliveryFee || 0) : 0;
+}
+function cartCount() { return cartList().reduce((s, i) => s + i.qty, 0); }
+
+function renderMenu() {
+  $("tabs").innerHTML = data.categories.map((c, i) =>
+    `<button class="tab ${i === 0 ? "on" : ""}" data-cat="${esc(c.id)}">${esc(c.name)}</button>`).join("");
+  $("menu").innerHTML = data.categories.map((c) => {
+    const items = data.menu.filter((m) => m.cat === c.id);
+    if (!items.length) return "";
+    return `<h2 class="cat" id="cat-${esc(c.id)}">${esc(c.name)}</h2><div class="grid">` +
+      items.map((m) => `
+        <div class="item">
+          <div class="thumb">${m.image ? `<img src="${esc(m.image)}" alt="${esc(m.name)}" loading="lazy">` : esc(m.emoji || "🍰")}</div>
+          <div class="info">
+            <div class="name">${esc(m.name)}</div>
+            <div class="desc">${esc(m.desc || "")}</div>
+            <div class="row"><span class="price">${money(m.price)}</span><span id="ctl-${esc(m.id)}"></span></div>
+          </div>
+        </div>`).join("") + `</div>`;
+  }).join("");
+  data.menu.forEach(renderControl);
+  $("tabs").querySelectorAll(".tab").forEach((b) => b.onclick = () => {
+    $("tabs").querySelectorAll(".tab").forEach((x) => x.classList.remove("on"));
+    b.classList.add("on");
+    const el = $("cat-" + b.dataset.cat);
+    if (el) window.scrollTo({ top: el.offsetTop - 60, behavior: "smooth" });
+  });
+}
+
+function renderControl(m) {
+  const el = $("ctl-" + m.id); if (!el) return;
+  const q = cart[m.id] || 0;
+  el.innerHTML = q
+    ? `<span class="qty"><button aria-label="ដក">−</button><span>${q}</span><button aria-label="បន្ថែម">+</button></span>`
+    : `<button class="add">បន្ថែម</button>`;
+  const btns = el.querySelectorAll("button");
+  if (q) { btns[0].onclick = () => change(m.id, -1); btns[1].onclick = () => change(m.id, 1); }
+  else btns[0].onclick = () => change(m.id, 1);
+}
+
+function change(id, d) {
+  cart[id] = Math.max(0, Math.min(99, (cart[id] || 0) + d));
+  haptic();
+  renderControl(data.menu.find((m) => m.id === id));
+  if (page === "checkout") renderCheckout();
+  updateButton();
+}
+
+function renderCheckout() {
+  const list = cartList();
+  if (!list.length) { show("menu"); return; }
+  $("cartLines").innerHTML = list.map((i) => `
+    <div class="line">
+      <div><div class="name">${esc(i.name)}</div><div class="desc">${money(i.price)} × ${i.qty}</div></div>
+      <span class="qty"><button data-id="${esc(i.id)}" data-d="-1">−</button><span>${i.qty}</span><button data-id="${esc(i.id)}" data-d="1">+</button></span>
+    </div>`).join("") +
+    (data.shop.deliveryFee ? `<div class="line"><span>ថ្លៃដឹក</span><span>${money(data.shop.deliveryFee)}</span></div>` : "");
+  $("cartLines").querySelectorAll("button").forEach((b) => b.onclick = () => change(b.dataset.id, Number(b.dataset.d)));
+  $("cartTotal").textContent = money(cartTotal());
+  $("cartRiel").textContent = riel(cartTotal());
+}
+
+function show(p) {
+  page = p;
+  $("pageMenu").classList.toggle("hidden", p !== "menu");
+  $("pageCheckout").classList.toggle("hidden", p !== "checkout");
+  $("pageDone").classList.toggle("hidden", p !== "done");
+  if (p === "checkout") renderCheckout();
+  window.scrollTo(0, 0);
+  if (tg) { try { p === "checkout" ? tg.BackButton.show() : tg.BackButton.hide(); } catch (e) {} }
+  updateButton();
+}
+
+function buttonText() {
+  if (page === "menu") return cartCount() ? `មើល កន្ត្រក (${cartCount()}) · ${money(cartTotal())}` : "";
+  if (page === "checkout") return sending ? "កំពុង ផ្ញើ..." : `កុម្ម៉ង់ · ${money(cartTotal())}`;
+  return "";
+}
+
+function updateButton() {
+  const text = buttonText();
+  if (inTelegram) {
+    if (text) { tg.MainButton.setParams({ text, color: "#1F6B3A", text_color: "#FFFFFF", is_visible: true }); }
+    else tg.MainButton.hide();
+  } else {
+    $("bar").style.display = text ? "block" : "none";
+    $("barBtn").textContent = text;
+    $("barBtn").disabled = sending;
+  }
+}
+
+function onMainButton() {
+  if (sending) return;
+  if (page === "menu" && cartCount()) show("checkout");
+  else if (page === "checkout") submit();
+}
+
+function validate() {
+  const name = $("fName").value.trim();
+  const phoneRaw = $("fPhone").value.replace(/[\s\-().]/g, "");
+  const okPhone = /^(\+?855|0)\d{8,9}$/.test(phoneRaw);
+  const address = $("fAddress").value.trim();
+  $("eName").style.display = name ? "none" : "block";
+  $("ePhone").style.display = okPhone ? "none" : "block";
+  $("eAddress").style.display = address ? "none" : "block";
+  const first = !name ? "fName" : !okPhone ? "fPhone" : !address ? "fAddress" : null;
+  if (first) { $(first).focus(); try { tg && tg.HapticFeedback.notificationOccurred("error"); } catch (e) {} return null; }
+  return { name, phone: phoneRaw, address, note: $("fNote").value.trim(), payment: document.querySelector('input[name="pay"]:checked').value };
+}
+
+async function submit() {
+  const customer = validate(); if (!customer) return;
+  const items = cartList().map((i) => ({ id: i.id, qty: i.qty }));
+  sending = true; $("eSubmit").style.display = "none"; updateButton();
+  try { inTelegram && tg.MainButton.showProgress(); } catch (e) {}
+  try {
+    let result;
+    if (demoMode) {
+      await new Promise((r) => setTimeout(r, 700));
+      result = { ok: true, orderNo: "DEMO01", total: cartTotal() };
+    } else {
+      const r = await fetch("/api/order", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ initData: tg ? tg.initData : "", items, customer })
+      });
+      result = await r.json().catch(() => ({ ok: false, error: "Server មិន ឆ្លើយ" }));
+    }
+    if (!result.ok) throw new Error(result.error || "មាន បញ្ហា");
+    $("doneNo").textContent = result.orderNo;
+    $("doneTotal").textContent = money(result.total);
+    $("doneKhqr").classList.toggle("hidden", customer.payment !== "khqr");
+    Object.keys(cart).forEach((k) => delete cart[k]);
+    data.menu.forEach(renderControl);
+    try { tg && tg.HapticFeedback.notificationOccurred("success"); } catch (e) {}
+    sending = false; show("done");
+  } catch (err) {
+    $("eSubmit").textContent = err.message + " — សូម ព្យាយាម ម្ដងទៀត";
+    $("eSubmit").style.display = "block";
+    sending = false; updateButton();
+  } finally {
+    try { inTelegram && tg.MainButton.hideProgress(); } catch (e) {}
+  }
+}
+
+async function init() {
+  if (tg) {
+    try { tg.ready(); tg.expand(); tg.setHeaderColor("#F7F8F4"); tg.setBackgroundColor("#F7F8F4"); } catch (e) {}
+    tg.MainButton.onClick(onMainButton);
+    tg.BackButton.onClick(() => show("menu"));
+    const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+    if (u) $("fName").value = [u.first_name, u.last_name].filter(Boolean).join(" ");
+  }
+  $("barBtn").onclick = onMainButton;
+  $("backLink").onclick = () => show("menu");
+  $("againBtn").onclick = () => show("menu");
+  try {
+    const r = await fetch("/api/menu", { cache: "no-store" });
+    if (!r.ok) throw 0;
+    const j = await r.json();
+    if (!j.menu) throw 0;
+    data = j; demoMode = false;
+  } catch (e) { demoMode = true; $("demo").style.display = "block"; }
+  $("shopName").textContent = data.shop.name;
+  renderMenu(); updateButton();
+}
+init();
+</script>
+</body>
+</html>
