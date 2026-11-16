@@ -13,6 +13,9 @@ export const SHOP = {
 export const CATEGORIES = [
   { id: "cake", name: "នំខេក" },
   { id: "bread", name: "នំប៉័ង" },
+  { id: "pizza", name: "ភីហ្សា" },
+  { id: "burger", name: "ប៊ឺហ្គឺ" },
+  { id: "tart", name: "នំតាត" },
   { id: "cookie", name: "ខូគី និង នំតូចៗ" },
 ];
 
@@ -22,6 +25,9 @@ export const MENU = [
   { id: "cake-slice",  cat: "cake",   name: "នំខេក មួយចំណិត",           desc: "ជ្រើស រសជាតិ ក្នុង កំណត់សម្គាល់", price: 350,  emoji: "🧁", image: "" },
   { id: "keto-bread",  cat: "bread",  name: "នំប៉័ង Keto",               desc: "Carb ទាប · ១ ដុំ",            price: 600,  emoji: "🍞", image: "" },
   { id: "keto-bun",    cat: "bread",  name: "នំប៉័ង មូល Keto (៤ គ្រាប់)", desc: "សម្រាប់ Burger ឬ អាហារពេលព្រឹក", price: 450, emoji: "🥯", image: "" },
+  { id: "pizza",       cat: "pizza",  name: "ភីហ្សា",                    desc: "ម្សៅ Keto · ឈីស និង សាច់",      price: 800,  emoji: "🍕", image: "" },
+  { id: "burger",      cat: "burger", name: "ប៊ឺហ្គឺ",                    desc: "នំប៉័ង Keto · សាច់គោ និង ឈីស",  price: 450,  emoji: "🍔", image: "" },
+  { id: "tart",        cat: "tart",   name: "នំតាត",                     desc: "សំបក អាល់ម៉ុន · គ្មាន ស្ករ",      price: 250,  emoji: "🥧", image: "" },
   { id: "cookie-box",  cat: "cookie", name: "ខូគី អាល់ម៉ុន (១០ គ្រាប់)", desc: "ស្រួយ · គ្មាន ស្ករ",           price: 500,  emoji: "🍪", image: "" },
   { id: "brownie",     cat: "cookie", name: "Brownie Keto",              desc: "សូកូឡា ខ្មៅ ៨៥%",             price: 300,  emoji: "🟫", image: "" },
 ];
